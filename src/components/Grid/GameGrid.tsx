@@ -13,7 +13,6 @@ export const Grid: React.FC<GridProps> = ({ gol, toggleCellLiveliness }: GridPro
       height: '100vmin',
       width: '100vmin',
       display: 'grid',
-      gridGap: '1px',
       gridTemplateColumns: `repeat(${width}, 1fr)`,
       gridTemplateRows: `repeat(${height}, 1fr)`,
     };
@@ -29,6 +28,7 @@ export const Grid: React.FC<GridProps> = ({ gol, toggleCellLiveliness }: GridPro
   const getCellStyle = useCallback(
     (c) => ({
       backgroundColor: c === 1 ? 'black' : 'white',
+      border: '0.1px solid lightgrey',
     }),
     [],
   );

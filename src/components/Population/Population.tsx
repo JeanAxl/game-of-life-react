@@ -18,8 +18,14 @@ const Population = ({ population }: Props) => {
     setDataSets(newData);
   }, [population]);
 
+  const reset = () => {
+    setDataSets({});
+    setDataSets(initialDatasets);
+  };
+
   return (
     <div>
+      <button onClick={reset}>reset</button>
       Population: <Line data={dataSets} />
     </div>
   );

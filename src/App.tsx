@@ -9,17 +9,22 @@ import { Population } from './components/Population/Population';
 const INITIAL_HEIGHT = 100;
 const INITIAL_WIDTH = 100;
 
-const initGol = (height: number, width: number): GameOfLife => {
+const initGol = (height: number, width: number, randomize = true): GameOfLife => {
   const gol = new GameOfLife({});
-  gol.init(height, width, randomGenerator(2));
+  if (randomize) {
+    gol.init(height, width, randomGenerator(2));
+  } else {
+    gol.init(height, width);
+  }
   return gol;
 };
 
 function App() {
-  const [gol, setGol] = useState<GameOfLife>(() => initGol(INITIAL_HEIGHT, INITIAL_WIDTH));
+  const [gol, setGol] = useState<GameOfLife>(() => initGol(INITIAL_HEIGHT, INITIAL_WIDTH, true));
   const [isRunning, setIsRunning] = useState(false);
   const [height, setHeight] = useState(INITIAL_HEIGHT);
   const [width, setWidth] = useState(INITIAL_WIDTH);
+  const [randomize, setRandomize] = useState(true);
 
   const style = {
     height: '100vh',
@@ -36,14 +41,13 @@ function App() {
 
   const applyConfiguration = () => {
     setIsRunning(false);
-    setGol(initGol(height, width));
+    setGol(initGol(height, width, randomize));
   };
 
   const start = () => {
     if (!isRunning) {
       setIsRunning(true);
 
-      //race condition
       runningRef.current = true;
       process();
     }
@@ -76,7 +80,14 @@ function App() {
     <div style={style}>
       <Grid gol={gol} toggleCellLiveliness={toggleCellLiveliness} />
       <div>
-        <ConfigurationPanel height={height} setHeight={setHeight} width={width} setWidth={setWidth} />
+        <ConfigurationPanel
+          height={height}
+          setHeight={setHeight}
+          width={width}
+          setWidth={setWidth}
+          randomize={randomize}
+          setRandomize={setRandomize}
+        />
         <Controls start={start} pause={pause} next={next} apply={applyConfiguration} />
         <Population population={gol.population} />
       </div>

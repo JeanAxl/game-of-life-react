@@ -3,11 +3,20 @@ import React from 'react';
 type Props = {
   height: number;
   width: number;
+  randomize: boolean;
   setHeight: (a: number) => void;
   setWidth: (a: number) => void;
+  setRandomize: any;
 };
 
-const ConfigurationPanel: React.FC<Props> = ({ height, setHeight, width, setWidth }: Props) => {
+const ConfigurationPanel: React.FC<Props> = ({
+  height,
+  setHeight,
+  width,
+  setWidth,
+  randomize,
+  setRandomize,
+}: Props) => {
   return (
     <div>
       <form>
@@ -29,6 +38,18 @@ const ConfigurationPanel: React.FC<Props> = ({ height, setHeight, width, setWidt
               onChange={(e) => setWidth(+e.target.value)}
             />
           </label>
+        </div>
+        <div>
+          <input
+            type="checkbox"
+            id="randomize"
+            name="randomize"
+            checked={randomize}
+            onChange={() => {
+              setRandomize(!randomize);
+            }}
+          />
+          <label htmlFor="randomize">Scales</label>
         </div>
       </form>
     </div>
