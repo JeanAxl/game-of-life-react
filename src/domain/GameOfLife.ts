@@ -3,38 +3,57 @@ export type CellGrid = Cell[][];
 
 class GameOfLife {
   public grid: CellGrid;
+  public population: number;
   private height: number;
   private width: number;
 
-  constructor() {
-    this.height = 0;
-    this.width = 0;
-    this.grid = [];
+  constructor({
+    height = 0,
+    width = 0,
+    population = 0,
+    grid = [[]],
+  }: {
+    height?: number;
+    width?: number;
+    population?: number;
+    grid?: CellGrid;
+  }) {
+    this.height = height;
+    this.width = width;
+    this.grid = grid;
+    this.population = population;
   }
 
   init(height: number, width: number, cellGeneration: () => Cell = () => Cell.DEAD) {
     this.height = height;
     this.width = width;
+    let population = 0;
     const newGrid: CellGrid = [];
     for (let column = 0; column < width; column++) {
       newGrid[column] = [];
       for (let row = 0; row < height; row++) {
+        const newCell = cellGeneration();
+        if (newCell === Cell.ALIVE) {
+          population++;
+        }
         newGrid[column][row] = cellGeneration();
       }
     }
 
+    this.population = population;
     this.grid = newGrid;
   }
 
-  nextGeneration(grid: CellGrid) {
+  nextGeneration() {
     // Works 10 time faster when copying the grid
-    const currentGrid = grid;
+    const currentGrid = this.grid;
 
     const { width, height } = this.getDimensions();
     let aliveNeighbors: number;
     let column: number;
     let row: number;
     let currentCell: Cell;
+    let population = 0;
     const newGrid: CellGrid = [];
 
     for (column = 0; column < this.width; column++) {
@@ -46,12 +65,14 @@ class GameOfLife {
         if (currentCell === Cell.DEAD) {
           if (aliveNeighbors === 3) {
             newGrid[column][row] = Cell.ALIVE;
+            population++;
           } else {
             newGrid[column][row] = Cell.DEAD;
           }
         } else {
           if (aliveNeighbors === 2 || aliveNeighbors === 3) {
             newGrid[column][row] = Cell.ALIVE;
+            population++;
           } else {
             newGrid[column][row] = Cell.DEAD;
           }
@@ -59,7 +80,7 @@ class GameOfLife {
       }
     }
 
-    return newGrid;
+    return new GameOfLife({ height: this.height, width: this.width, grid: newGrid, population });
   }
 
   getDimensions(): { width: number; height: number } {

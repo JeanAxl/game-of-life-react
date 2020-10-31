@@ -1,29 +1,34 @@
-import React from 'react';
-import { CellGrid } from '../../domain/GameOfLife';
+import React, { useCallback, useMemo } from 'react';
+import { GameOfLife } from '../../domain/GameOfLife';
 
 type GridProps = {
-  grid: CellGrid;
+  gol: GameOfLife;
 };
 
-export const Grid: React.FC<GridProps> = ({ grid }: GridProps) => {
-  const style = {
-    display: 'grid',
-    gridGap: '1px',
-    gridTemplateColumns: `repeat(${100}, ${10}px)`,
-  };
+export const Grid: React.FC<GridProps> = ({ gol }: GridProps) => {
+  const style = useMemo(() => {
+    const { height, width } = gol.getDimensions();
+    return {
+      height: '100vmin',
+      width: '100vmin',
+      display: 'grid',
+      gridGap: '1px',
+      gridTemplateColumns: `repeat(${width}, 1fr)`,
+      gridTemplateRows: `repeat(${height}, 1fr)`,
+    };
+  }, [gol]);
+
+  const getCellStyle = useCallback(
+    (c) => ({
+      backgroundColor: c === 1 ? 'black' : 'white',
+    }),
+    [],
+  );
+
   return (
     <div style={style}>
-      {grid.map((column, columnIndex) =>
-        column.map((cell, rowIndex) => (
-          <div
-            style={{
-              backgroundColor: cell === 1 ? 'black' : 'white',
-              width: '10px',
-              height: '10px',
-            }}
-            key={columnIndex + ':' + rowIndex}
-          />
-        )),
+      {gol.grid.map((column, columnIndex) =>
+        column.map((cell, rowIndex) => <div style={getCellStyle(cell)} key={columnIndex + ':' + rowIndex} />),
       )}
     </div>
   );
