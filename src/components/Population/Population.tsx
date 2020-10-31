@@ -1,38 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { GameOfLife } from '../../domain/GameOfLife';
-import { ChartPoint, ChartData } from 'chart.js';
+import React, { useEffect, useRef, useState } from 'react';
+import { ChartData } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { addPopulationValueToDataset, initialDatasets } from './utils';
+
 type Props = {
-  gol: GameOfLife;
+  population: number;
 };
 
-let i = 0;
-const Population = ({ gol }: Props) => {
-  const [dataSets, setDataSets] = useState<ChartData>({
-    labels: [],
-    datasets: [
-      {
-        label: 'Population',
-        data: [],
-      },
-    ],
-  });
+const Population = ({ population }: Props) => {
+  const [dataSets, setDataSets] = useState<ChartData>(initialDatasets);
+
+  const currentGenRef = useRef(0);
+
   useEffect(() => {
-    let data: any[] = [];
-    if (dataSets?.datasets && dataSets?.datasets[0]?.data && dataSets?.datasets[0].data) {
-      data = dataSets.datasets[0].data;
-    }
-    const newData = {
-      labels: [...(dataSets?.labels || []), i++],
-      datasets: [
-        {
-          label: 'Population',
-          data: [...data, gol.population as ChartPoint],
-        },
-      ],
-    };
+    const newData = addPopulationValueToDataset(population, dataSets, currentGenRef.current);
+    currentGenRef.current++;
     setDataSets(newData);
-  }, [gol]);
+  }, [population]);
 
   return (
     <div>

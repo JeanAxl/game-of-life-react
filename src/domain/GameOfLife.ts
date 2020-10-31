@@ -1,4 +1,5 @@
 import { Cell } from './Cell';
+import { copyGrid } from './utils';
 export type CellGrid = Cell[][];
 
 class GameOfLife {
@@ -108,6 +109,19 @@ class GameOfLife {
     });
 
     return aliveNeighbors;
+  }
+
+  toggleLiveliness(column: number, row: number) {
+    const newGrid = copyGrid(this.grid, this.width);
+    if (newGrid[column][row] === Cell.ALIVE) {
+      newGrid[column][row] = Cell.DEAD;
+      this.population--;
+    } else {
+      newGrid[column][row] = Cell.ALIVE;
+      this.population++;
+    }
+
+    return new GameOfLife({ height: this.height, width: this.width, grid: newGrid, population: this.population });
   }
 
   setCell(column: number, row: number, cell: Cell) {

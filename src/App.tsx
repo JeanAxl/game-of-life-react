@@ -36,8 +36,7 @@ function App() {
 
   const applyConfiguration = () => {
     setIsRunning(false);
-    const newGol = initGol(height, width);
-    setGol(newGol);
+    setGol(initGol(height, width));
   };
 
   const start = () => {
@@ -58,6 +57,12 @@ function App() {
     setGol(gol.nextGeneration());
   };
 
+  const toggleCellLiveliness = (column: number, row: number) => {
+    if (!runningRef.current) {
+      setGol(gol.toggleLiveliness(column, row));
+    }
+  };
+
   const process = useCallback(() => {
     if (runningRef.current) {
       setTimeout(() => {
@@ -69,11 +74,11 @@ function App() {
 
   return (
     <div style={style}>
-      <Grid gol={gol} />
+      <Grid gol={gol} toggleCellLiveliness={toggleCellLiveliness} />
       <div>
         <ConfigurationPanel height={height} setHeight={setHeight} width={width} setWidth={setWidth} />
         <Controls start={start} pause={pause} next={next} apply={applyConfiguration} />
-        <Population gol={gol} />
+        <Population population={gol.population} />
       </div>
     </div>
   );

@@ -3,9 +3,10 @@ import { GameOfLife } from '../../domain/GameOfLife';
 
 type GridProps = {
   gol: GameOfLife;
+  toggleCellLiveliness: (column: number, row: number) => void;
 };
 
-export const Grid: React.FC<GridProps> = ({ gol }: GridProps) => {
+export const Grid: React.FC<GridProps> = ({ gol, toggleCellLiveliness }: GridProps) => {
   const style = useMemo(() => {
     const { height, width } = gol.getDimensions();
     return {
@@ -16,7 +17,14 @@ export const Grid: React.FC<GridProps> = ({ gol }: GridProps) => {
       gridTemplateColumns: `repeat(${width}, 1fr)`,
       gridTemplateRows: `repeat(${height}, 1fr)`,
     };
-  }, [gol]);
+  }, [gol.getDimensions()]);
+
+  const handleCellClick = useCallback(
+    (column: number, row: number) => {
+      toggleCellLiveliness(column, row);
+    },
+    [toggleCellLiveliness],
+  );
 
   const getCellStyle = useCallback(
     (c) => ({
@@ -28,7 +36,13 @@ export const Grid: React.FC<GridProps> = ({ gol }: GridProps) => {
   return (
     <div style={style}>
       {gol.grid.map((column, columnIndex) =>
-        column.map((cell, rowIndex) => <div style={getCellStyle(cell)} key={columnIndex + ':' + rowIndex} />),
+        column.map((cell, rowIndex) => (
+          <div
+            onClick={() => handleCellClick(columnIndex, rowIndex)}
+            style={getCellStyle(cell)}
+            key={columnIndex + ':' + rowIndex}
+          />
+        )),
       )}
     </div>
   );
