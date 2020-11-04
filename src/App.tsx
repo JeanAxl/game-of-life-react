@@ -5,6 +5,7 @@ import { Grid } from './components/Grid/GameGrid';
 import { GameOfLife } from './domain/GameOfLife';
 import { randomGenerator } from './domain/utils';
 import { Population } from './components/Population/Population';
+import { CanvasGrid } from './components/Grid/CanvasGrid';
 
 const INITIAL_HEIGHT = 100;
 const INITIAL_WIDTH = 100;
@@ -78,7 +79,7 @@ function App() {
 
   return (
     <div style={style}>
-      <Grid gol={gol} toggleCellLiveliness={toggleCellLiveliness} />
+      <CanvasGrid gol={gol} />
       <div>
         <ConfigurationPanel
           height={height}
@@ -89,7 +90,7 @@ function App() {
           setRandomize={setRandomize}
         />
         <Controls start={start} pause={pause} next={next} apply={applyConfiguration} />
-        <Population population={gol.population} />
+        {/*        <Population population={gol.population} />*/}
       </div>
     </div>
   );
